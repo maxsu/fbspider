@@ -70,5 +70,15 @@ mkQueue n d = do
 
 main = do 
   [id] <- getArgs
-  g <- friendsAndfriends (read id)
+  let uid = read id
+  g <- friendsAndfriends uid
+  putStrLn "dati"
   print g
+  putStrLn "Sommario.."
+  let amici = (childrens g M.! uid)
+      namici = length amici
+  putStrLn $ labels g M.! uid ++ " ha " ++ show namici ++ " amici."
+  let media = (fromIntegral (sum . map (length . (childrens g M.!)) $ amici) / fromIntegral namici)
+  putStrLn $ "I quali hanno in media " ++ show media ++ " amici."
+  putStrLn $ "Per un totale di " ++ show (M.size (labels g)) ++ "utenti distinti."
+
