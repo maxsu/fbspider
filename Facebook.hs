@@ -12,6 +12,7 @@ import Control.Concurrent
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as M
 import System.IO
+import Numeric
 
 query_uri :: Int -> URI
 query_uri id = fromJust . parseURI $ "http://www.facebook.com/ajax/typeahead_friends.php?u="++show id++"&__a=1"
@@ -79,6 +80,6 @@ main = do
       namici = length amici
   putStrLn $ labels g M.! uid ++ " ha " ++ show namici ++ " amici."
   let media = (fromIntegral (sum . map (length . (childrens g M.!)) $ amici) / fromIntegral namici)
-  putStrLn $ "I quali hanno in media " ++ show media ++ " amici."
-  putStrLn $ "Per un totale di " ++ show (M.size (labels g)) ++ "utenti distinti."
+  putStrLn $ "I quali hanno in media " ++ showGFloat (Just 2) media "" ++ " amici."
+  putStrLn $ "Per un totale di " ++ show (M.size (labels g)) ++ " utenti distinti."
 
