@@ -73,13 +73,13 @@ main = do
   [id] <- getArgs
   let uid = read id
   g <- friendsAndfriends uid
-  putStrLn "dati"
+  putStrLn "data"
   print g
-  putStrLn "Sommario.."
-  let amici = (childrens g M.! uid)
-      namici = length amici
-  putStrLn $ labels g M.! uid ++ " ha " ++ show namici ++ " amici."
-  let media = (fromIntegral (sum . map (length . (childrens g M.!)) $ amici) / fromIntegral namici)
-  putStrLn $ "I quali hanno in media " ++ showGFloat (Just 2) media "" ++ " amici."
-  putStrLn $ "Per un totale di " ++ show (M.size (labels g)) ++ " utenti distinti."
+  putStrLn "Summary.."
+  let friends = (childrens g M.! uid)
+      nfriends = length friends
+  putStrLn $ labels g M.! uid ++ " has " ++ show nfriends ++ " friends."
+  let average = (fromIntegral (sum . map (length . (childrens g M.!)) $ friends) / fromIntegral nfriends)
+  putStrLn $ "Which have an average of " ++ showGFloat (Just 2) average "" ++ " friends."
+  putStrLn $ "For a total of " ++ show (M.size (labels g)) ++ " distinct users."
 
