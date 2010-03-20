@@ -14,16 +14,16 @@ import qualified Data.IntMap as M
 import System.IO
 import Numeric
 
-query_uri :: Int -> URI
-query_uri id = fromJust . parseURI $ "http://www.facebook.com/ajax/typeahead_friends.php?u="++show id++"&__a=1"
+queryUri :: Int -> URI
+queryUri id = fromJust . parseURI $ "http://www.facebook.com/ajax/typeahead_friends.php?u="++show id++"&__a=1"
 
 friends id = browse' $ do 
-  js <- fmap (drop (length "for (;;);") . rspBody . snd) . request . mkRequest GET . query_uri $ id
+  js <- fmap (drop (length "for (;;);") . rspBody . snd) . request . mkRequest GET . queryUri $ id
   return $ case fromJson `fmap` decode js of
              (Ok (Just o)) -> o
              _ -> []
 
-friendsAndfriends id = do 
+friendsAndFriends id = do 
   c <- newChan
   enqueue <- mkQueue 15 (round $ 10^6 * 0.5)
   fs <- friends id
@@ -54,11 +54,11 @@ field f (JSObject o) = lookup f $ fromJSObject o
 field _ _ = Nothing
 string (JSString s) = Just $ fromJSString s
 string _ = Nothing
-fb_id (JSRational _ r) = return . truncate $ r
-fb_id _ = Nothing
+fbId (JSRational _ r) = return . truncate $ r
+fbId _ = Nothing
 fromJson x = do 
   JSArray xs <- field "friends" <=< field "payload" $ x
-  mapM (liftM2 (liftM2 (,)) (fb_id <=< field "i") (string <=< field "t")) xs 
+  mapM (liftM2 (liftM2 (,)) (fbId <=< field "i") (string <=< field "t")) xs 
 
 
 mkQueue :: Int -> Int -> IO (IO () -> IO ())
@@ -72,7 +72,7 @@ mkQueue n d = do
 main = do 
   [id] <- getArgs
   let uid = read id
-  g <- friendsAndfriends uid
+  g <- friendsAndFriends uid
   putStrLn "data"
   print g
   putStrLn "Summary.."
