@@ -80,14 +80,13 @@ mkQueue n d = do
 main = do 
   [idStr] <- getArgs
   let uid = read idStr
-  g <- friendsAndFriends uid
+  graph <- friendsAndFriends uid
   putStrLn "Data:"
-  print g
+  print graph
   putStrLn "Summary:"
-  let friends = (children g ! uid)
-      nfriends = length friends
-  putStrLn $ labels g ! uid ++ " has " ++ show nfriends ++ " friends."
-  let average = (fromIntegral (sum . map (length . (children g !)) $ friends) / fromIntegral nfriends)
+  let nfriends = length $ children graph ! uid
+      average = (fromIntegral (size $ labels graph) / fromIntegral nfriends)
+  putStrLn $ labels graph ! uid ++ " has " ++ show nfriends ++ " friends."
   putStrLn $ "Which have an average of " ++ showGFloat (Just 2) average "" ++ " friends."
-  putStrLn $ "For a total of " ++ show (size (labels g)) ++ " distinct users."
+  putStrLn $ "For a total of " ++ show (size $ labels graph) ++ " distinct users."
 
